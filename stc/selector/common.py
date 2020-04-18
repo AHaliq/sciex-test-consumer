@@ -19,6 +19,15 @@ _EEPROM = sb('eeprom')
 _SN = r's/?n'
 
 
+def constant_selector(fix_value, fix_label):
+    """
+    Returns fix_value regardless of file_str
+    """
+    def _constant_selector(file_str, label=None):
+        return fix_value if label is None else fix_label
+    return _constant_selector
+
+
 def name_selector(file_str, label=None):
     """
     selects name
@@ -33,7 +42,7 @@ def name_selector(file_str, label=None):
         rf"{_NAME}:\s*(.+)\s*({_INSTRUMENT}|{_ABBR_INSTRUMENT})?({_MODEL})",
         flags=re.IGNORECASE
     )
-    return regexp.search(file_str).group(1).strip() if label is None else "name"
+    return regexp.search(file_str).group(1).strip().lower().title() if label is None else "name"
 
 
 def model_selector(file_str, label=None):

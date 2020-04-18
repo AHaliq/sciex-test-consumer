@@ -10,7 +10,6 @@ from utils import get_file_from_path
 
 
 def make_table(selectors, file_path_str_pairs):
-    print('start to make table')
     column_map = {k: None for k in selectors}
     selector_key = 'selectors'
     file_key = 'file_name'

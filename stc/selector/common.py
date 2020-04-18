@@ -122,6 +122,15 @@ def field_selector(field_name='.*', row_id='.*', data_type='.*'):
 
     capture ends with: newline or EOF
     """
+    if field_name != '.*':
+        pre_name = f'field_{field_name}'
+    elif row_id != '.*':
+        pre_name = f'id_{row_id}'
+    elif data_type != '.*':
+        pre_name = f'type_{data_type}'
+    else:
+        pre_name = 'generic'
+
     def _field_selector(file_str, label=None):
         regexp = re.compile(
             rf"\n({field_name})\s+\[({row_id})\]\s+(=*)\s*(.*)\s+\(({data_type})\).*(\n|\Z)",
@@ -129,4 +138,5 @@ def field_selector(field_name='.*', row_id='.*', data_type='.*'):
         match = regexp.search(file_str)
         field_value = None if match is None else match.group(1).strip()
         return match.group(4).strip() if label is None else field_value
+    _field_selector.__name__ = f'{pre_name}_field_selector'
     return _field_selector

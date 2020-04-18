@@ -6,6 +6,7 @@ rope = "*"
 [packages]
 pandas = "*"
 xlsxwriter = "*"
+xlrd = "*"
 
 [requires]
 python_version = "3.7"

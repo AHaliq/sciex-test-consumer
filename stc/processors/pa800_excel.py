@@ -7,14 +7,21 @@ import xlsxwriter
 
 from utils import list_range as lr
 from writers.excel import auto_fit_columns
-from readers.txt import txt_file_to_str
+from readers.excel import excel_sheet_to_frame
+import xlrd
 
-READER = txt_file_to_str
+
+def READER(file_path):
+    try:
+        return excel_sheet_to_frame(file_path, 'Final EEPROM')
+    except xlrd.biffh.XLRDError:
+        return None
+
 
 SELECTORS = [
     ex.name_selector,
     ex.date_selector,
-    ex.model_selector,
+    ex.constant_selector("PA800", "model"),
     ex.serial_selector
 ] + [
     ex.field_selector(row_id=i)

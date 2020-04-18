@@ -11,12 +11,13 @@ from utils import regexp_space_between as sb, month_dict
 
 # regexp constants
 _NAME = sb('name')
+_TECHNICIAN = sb('technician')
 _INSTRUMENT = sb('instrument')
 _ABBR_INSTRUMENT = sb('instrmnt.')
 _DATE = sb('date')
 _MODEL = sb('model')
 _EEPROM = sb('eeprom')
-_SN = r's/?n'
+_SN = r's/?n\s*'
 
 
 def constant_selector(fix_value, fix_label):
@@ -39,10 +40,10 @@ def name_selector(file_str, label=None):
     capture ends with: optionally instrument and model
     """
     regexp = re.compile(
-        rf"{_NAME}:\s*(.+)\s*({_INSTRUMENT}|{_ABBR_INSTRUMENT})?({_MODEL})",
+        rf"({_NAME}|{_TECHNICIAN}):\s*(.+?)\s*(({_INSTRUMENT}|{_ABBR_INSTRUMENT})?{_MODEL}|\n)",
         flags=re.IGNORECASE
     )
-    return regexp.search(file_str).group(1).strip().lower().title() if label is None else "name"
+    return regexp.search(file_str).group(2).strip().lower().title() if label is None else "name"
 
 
 def model_selector(file_str, label=None):
@@ -59,13 +60,13 @@ def model_selector(file_str, label=None):
     """
     try:
         regexp = re.compile(
-            rf"{_MODEL}\s*:\s*(.*?)\+?\s*({_INSTRUMENT}|{_ABBR_INSTRUMENT}|{_SN})",
+            rf"{_MODEL}:\s*(.*?)\+?\s*({_INSTRUMENT}|{_ABBR_INSTRUMENT}|{_SN}|\n)",
             flags=re.IGNORECASE
         )
         return regexp.search(file_str).group(1).strip() if label is None else "model"
     except (AttributeError, IndexError):
         regexp = re.compile(
-            rf"{_MODEL}/{_SN}\s*:\s*(.*?)\+?(/| )",
+            rf"{_MODEL}/{_SN}:\s*(.*?)\+?(/| )",
             flags=re.IGNORECASE
         )
         return regexp.search(file_str).group(1).strip() if label is None else "model"
@@ -87,13 +88,13 @@ def serial_selector(file_str, label=None):
     def _serial_selector(file_str, label=None):
         try:
             regexp = re.compile(
-                rf"/\s*{_SN}\s*:\s*(.*?)(/| )/?(.*?)((A|B).*)\s*({_DATE}|{_EEPROM}|-|>)",
+                rf"/\s*{_SN}:\s*(.*?)(/| )/?(.*?)((A|B).*)\s*({_DATE}|{_EEPROM}|-|>|\n)",
                 flags=re.IGNORECASE
             )
             return regexp.search(file_str).group(4).strip() if label is None else "serial"
         except (AttributeError, IndexError):
             regexp = re.compile(
-                rf"{_SN}\s*:\s*(.*)\s*({_DATE}|{_EEPROM}|-|>)",
+                rf"{_SN}:\s*(.*)\s*({_DATE}|{_EEPROM}|-|>|\n)",
                 flags=re.IGNORECASE
             )
             return regexp.search(file_str).group(1).strip() if label is None else "serial"
@@ -108,17 +109,29 @@ def date_selector(file_str, label=None):
 
     the following formats are accepted:
 
-    DATE: <two digit day> <three character month> <4 digit year>
+    DATE: dd mmm yyyy
+    DATE: dd/mm/yyyy
     """
-    regexp = re.compile(
-        r"([0-9]{2})(th|st|nd)?\s*([a-z]{3})\s*([0-9]{4})",
-        flags=re.IGNORECASE
-    )
-    match = regexp.search(file_str)
-    day = int(match.group(1))
-    month = int(month_dict(match.group(3)))
-    year = int(match.group(4))
-    return pd.Timestamp(year=year, month=month, day=day) if label is None else "date"
+    try:
+        regexp = re.compile(
+            r"([0-9]{2})(th|st|nd)?\s*([a-z]{3})\s*([0-9]{4})",
+            flags=re.IGNORECASE
+        )
+        match = regexp.search(file_str)
+        day = int(match.group(1))
+        month = int(month_dict(match.group(3)))
+        year = int(match.group(4))
+        return pd.Timestamp(year=year, month=month, day=day) if label is None else "date"
+    except (AttributeError, IndexError):
+        regexp = re.compile(
+            r"([0-9]{4})(/|-)([0-9]{1,2})(/|-)([0-9]{1,2})",
+            flags=re.IGNORECASE
+        )
+        match = regexp.search(file_str)
+        day = int(match.group(5))
+        month = int(match.group(3))
+        year = int(match.group(1))
+        return pd.Timestamp(year=year, month=month, day=day) if label is None else "date"
 
 
 def field_selector(field_name='.*', row_id='.*', data_type='.*'):

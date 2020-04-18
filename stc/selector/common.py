@@ -75,7 +75,7 @@ def serial_selector(file_str, label=None):
 
     capture ends with: date, eeprom, dashed border, >
     """
-    def actual(file_str, label=None):
+    def _serial_selector(file_str, label=None):
         try:
             regexp = re.compile(
                 rf"/\s*{_SN}\s*:\s*(.*?)(/| )/?(.*?)((A|B).*)\s*({_DATE}|{_EEPROM}|-|>)",
@@ -89,8 +89,8 @@ def serial_selector(file_str, label=None):
             )
             return regexp.search(file_str).group(1).strip() if label is None else "serial"
     if label is None:
-        return actual(file_str)[-4:]
-    return actual(file_str, label)
+        return _serial_selector(file_str)[-4:]
+    return _serial_selector(file_str, label)
 
 
 def date_selector(file_str, label=None):
@@ -122,11 +122,11 @@ def field_selector(field_name='.*', row_id='.*', data_type='.*'):
 
     capture ends with: newline or EOF
     """
-    def selector(file_str, label=None):
+    def _field_selector(file_str, label=None):
         regexp = re.compile(
             rf"\n({field_name})\s+\[({row_id})\]\s+(=*)\s*(.*)\s+\(({data_type})\).*(\n|\Z)",
             flags=re.IGNORECASE)
         match = regexp.search(file_str)
         field_value = None if match is None else match.group(1).strip()
         return match.group(4).strip() if label is None else field_value
-    return selector
+    return _field_selector

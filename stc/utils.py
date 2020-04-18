@@ -53,3 +53,17 @@ def expand_path(path: str) -> str:
     Expand environment variables and '~' in path string
     """
     return os.path.expandvars(os.path.expanduser(path))
+
+
+def join_path(first_path: str, second_path: str) -> str:
+    """
+    Concat two path strings
+    """
+    return os.path.join(expand_path(first_path), expand_path(second_path))
+
+
+def get_file_from_path(file_path: str) -> str:
+    """
+    Extract filename from path
+    """
+    return os.path.basename(file_path)

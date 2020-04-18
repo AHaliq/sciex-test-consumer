@@ -10,11 +10,10 @@ import sys
 import selector.common as ex
 
 from filesys import get_files_from_dir
-from writers.excel import write_frame_to_new_excel
 
 from table import make_table
 from utils import get_path, join_path
-from processors.pa800_excel import SELECTORS, FORMATTER, READER
+from processors.pa800_excel import SELECTORS, WRITER, READER
 
 OKBLUE = '\033[94m'
 WARNING = '\033[93m'
@@ -75,11 +74,7 @@ DATA_FRAME, ERRORS = make_table(
     FILE_PATH_STR_PAIRS
 )
 
-write_frame_to_new_excel(
-    EXCEL_PATH,
-    DATA_FRAME,
-    format_func=FORMATTER(DATA_FRAME)
-)
+WRITER(EXCEL_PATH, DATA_FRAME)
 
 if not ERRORS.empty:
     print(FAIL + BOLD + "\ntabulating selector failures..." + ENDC)

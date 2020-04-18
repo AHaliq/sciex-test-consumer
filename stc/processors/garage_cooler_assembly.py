@@ -6,7 +6,7 @@ import selector.common as ex
 import xlsxwriter
 
 from utils import list_range as lr
-from writers.excel import auto_fit_columns
+from writers.excel import auto_fit_columns, standard_processor_writer
 from readers.txt import txt_file_to_str
 
 READER = txt_file_to_str
@@ -22,7 +22,4 @@ SELECTORS = [
 ]
 
 
-def FORMATTER(data_frame):
-    def _FORMATTER(worksheet: xlsxwriter.worksheet.Worksheet):
-        auto_fit_columns(data_frame, worksheet)
-    return _FORMATTER
+WRITER = standard_processor_writer

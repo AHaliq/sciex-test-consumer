@@ -51,9 +51,7 @@ SELECTORS = [
 print(f"\nextracting data from {len(FILE_PATHS)} files...")
 DATA_FRAME, ERRORS = make_table(SELECTORS, FILE_PATH_STR_PAIRS)
 
-
 write_frame_to_new_excel(EXCEL_PATH, DATA_FRAME)
-
 print("\nselector failures:")
 print(ERRORS)
 print(f"\nsuccessfully generated '{EXCEL_PATH}'")

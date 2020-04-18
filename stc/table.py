@@ -10,6 +10,12 @@ from utils import get_file_from_path
 
 
 def make_table(selectors, file_path_str_pairs):
+    """
+    Generate dataframe
+    @param selectors            list of selectors in order; values extracted as columns
+    @param file_path_str_pairs  list of pairs of file_path and file_str
+    @return pair of dataframe and selector failures
+    """
     column_map = {k: None for k in selectors}
     selector_key = 'selectors'
     file_key = 'file_name'
@@ -23,12 +29,12 @@ def make_table(selectors, file_path_str_pairs):
                 column_map[selector] = selector(file_str, True)
             return res
         except (AttributeError, IndexError):
-            # TODO print missing data based on selector
             nonlocal failures
             new_failure = {}
             new_failure[selector_key] = selector.__name__
             new_failure[file_key] = get_file_from_path(file_path)
-            failures = failures.append(new_failure, ignore_index=True)
+            next_failures = failures.append(new_failure, ignore_index=True)
+            failures = next_failures
             return None
     data = [[extract(s, f) for s in selectors] for f in file_path_str_pairs]
     columns = [column_map[s] for s in selectors]

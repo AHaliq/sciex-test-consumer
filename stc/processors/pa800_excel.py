@@ -13,7 +13,7 @@ import xlrd
 
 def READER(file_path):
     try:
-        return excel_sheet_to_frame(file_path, 'Final EEPROM')
+        return excel_sheet_to_frame(file_path, 'Final EEPROM', [0, 1])
     except xlrd.biffh.XLRDError:
         return None
 

@@ -50,5 +50,9 @@ DATA_FRAME, ERRORS = make_table(SELECTORS, FILE_PATH_STR_PAIRS)
 
 
 write_frame_to_new_excel(EXCEL_PATH, FILE_NAME, DATA_FRAME)
-print("\nselector failures:")
+
+print("\n generated table:")
+print(DATA_FRAME)
+print("\n selector failures:")
 print(ERRORS)
+print(f"\n successfully generated '{FILE_NAME}' at '{EXCEL_PATH}'")

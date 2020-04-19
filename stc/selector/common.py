@@ -1,5 +1,5 @@
 """
-stc.selector.common
+selector.common
 ~~~~~~~~~~~~~~~~~~~~
 
 Common extractors between different test data types
@@ -7,7 +7,7 @@ Common extractors between different test data types
 
 import re
 import pandas as pd
-from stc.utils import regexp_space_between as sb, month_dict
+from utils import regexp_space_between as sb, month_dict
 
 # regexp constants
 _NAME = sb('name')

@@ -1,5 +1,5 @@
 """
-stc.readers.excel
+readers.excel
 ~~~~~~~~~~~~~~~~~
 
 Read excel files util
@@ -7,7 +7,7 @@ Read excel files util
 
 import pandas as pd
 import functools
-from stc.utils import list_range as lr
+from utils import list_range as lr
 
 
 def excel_sheet_to_str(excel_path, sheet, columns):

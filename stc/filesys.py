@@ -1,12 +1,12 @@
 """
-stc.filesys
+filesys
 ~~~~~~~
 
 Filesystem utils
 """
 
 import os
-from stc.utils import expand_path
+from utils import expand_path
 
 
 def get_files_from_dir(path):

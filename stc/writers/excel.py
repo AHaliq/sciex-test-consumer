@@ -1,5 +1,5 @@
 """
-stc.writers.excel
+writers.excel
 ~~~~~~~~~~~~~~~~~
 
 Write utility to excel files

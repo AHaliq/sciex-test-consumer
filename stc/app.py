@@ -1,5 +1,5 @@
 """
-stc.app
+app
 ~~~~~~~
 
 Main application initialization
@@ -11,11 +11,11 @@ import importlib
 import pkgutil
 import processors
 
-import stc.selector.common as ex
-import stc.logger
-from stc.filesys import get_files_from_dir
-from stc.table import make_table, errors_to_file_errors
-from stc.utils import get_path, join_path, get_basename_from_path
+import selector.common as ex
+import logger
+from filesys import get_files_from_dir
+from table import make_table, errors_to_file_errors
+from utils import get_path, join_path, get_basename_from_path
 
 CMD_ARGS = list(sys.argv)
 

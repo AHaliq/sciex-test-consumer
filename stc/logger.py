@@ -1,12 +1,12 @@
 """
-stc.logger
+logger
 ~~~~~~~~~~
 
 Logging util
 """
 
 import sys
-from stc.table import errors_to_file_errors
+from table import errors_to_file_errors
 
 OKBLUE = '\033[94m'
 WARNING = '\033[93m'

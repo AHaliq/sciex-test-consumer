@@ -1,11 +1,11 @@
 """
-stc.readers.txt
+readers.txt
 ~~~~~~~~~~~~~~~
 
 Read txt files util
 """
 
-from stc.utils import expand_path
+from utils import expand_path
 
 
 def txt_file_to_str(path):

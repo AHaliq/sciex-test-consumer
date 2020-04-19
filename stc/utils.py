@@ -1,5 +1,5 @@
 """
-stc.utils
+utils
 ~~~~~~~~~
 
 Utility functions

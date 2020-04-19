@@ -1,5 +1,5 @@
 """
-stc.selector.common
+selector.common
 ~~~~~~~~~~~~~~~~~~~~
 
 Common extractors between for dataset p800

@@ -40,14 +40,16 @@ def log_errors(errors):
     file_errors = errors_to_file_errors(errors, True)
     print(FAIL + BOLD + "\nselector failures:" + ENDC)
     error_list = file_errors.items()
-    fail_count = 0
     for key, value in error_list:
         print(FAIL + UNDERLINE + key + ENDC, end='\n  ')
-        for file_name in value:
-            fail_count += 1
+        file_limit = 10
+        for file_name in value[:file_limit]:
             print(FAIL + f'{file_name}, ' + ENDC, end='')
-        print('')
-    msg = f"\n{fail_count} selector failures:"
+        if len(value) > file_limit:
+            print(FAIL + f'{len(value) - file_limit} more...' + ENDC)
+        else:
+            print('')
+    msg = f"\n{errors.shape[0]} selector failures:"
     print(FAIL + BOLD + msg + ENDC)
 
 

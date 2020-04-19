@@ -5,16 +5,12 @@ app
 Main application initialization
 """
 
-import os
 import sys
-import importlib
-import pkgutil
 import processors
 
-import selector.common as ex
 import logger
-from filesys import get_files_from_dir
-from table import make_table, errors_to_file_errors
+import filesys
+from table import make_table
 from utils import get_path, join_path, get_basename_from_path
 
 CMD_ARGS = list(sys.argv)
@@ -26,14 +22,13 @@ except IndexError:
 
 try:
     MODULE_NAME = get_basename_from_path(DIR).replace(' ', '_').lower()
-    proc = importlib.import_module(f'processors.{MODULE_NAME}')
+    proc = filesys.dynamic_import(f'processors.{MODULE_NAME}')
     print(f"successfully loaded processor '{MODULE_NAME}'")
 except ModuleNotFoundError:
     print(f"no processor '{MODULE_NAME}' defined")
     print(f"make sure your data directory is the same as processor")
     print(f"list of available processors:")
-    pkgpath = os.path.dirname(processors.__file__)
-    for name in [name for _, name, _ in pkgutil.iter_modules([pkgpath])]:
+    for name in filesys.get_modules_in_pkg(processors):
         print(f"  {name}")
     sys.exit(1)
 
@@ -51,7 +46,7 @@ except IndexError:
 
 EXCEL_PATH = join_path(EXCEL_DIR_PATH, f'{FILE_NAME}.xlsx')
 print(f"\nreading file paths in '{DIR}'...")
-FILE_PATHS = [join_path(DIR, f) for f in get_files_from_dir(DIR)]
+FILE_PATHS = [join_path(DIR, f) for f in filesys.get_files_from_dir(DIR)]
 NUMBER_OF_FILES = len(FILE_PATHS)
 
 # STEP 2 collate file paths

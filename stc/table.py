@@ -6,7 +6,8 @@ Util to generate DataFrames
 """
 
 import pandas as pd
-from utils import get_file_from_path
+from utils import get_basename_from_path
+from selector.common import filename_selector
 
 
 def make_table(selectors, file_path_str_pairs):
@@ -24,7 +25,10 @@ def make_table(selectors, file_path_str_pairs):
     def extract(selector, file_path_str_pair):
         file_path, file_str = file_path_str_pair
         try:
-            res = selector(file_str)
+            if selector == filename_selector:
+                res = file_path
+            else:
+                res = selector(file_str)
             if column_map[selector] is None:
                 column_map[selector] = selector(file_str, True)
             return res
@@ -32,10 +36,28 @@ def make_table(selectors, file_path_str_pairs):
             nonlocal failures
             new_failure = {}
             new_failure[selector_key] = selector.__name__
-            new_failure[file_key] = get_file_from_path(file_path)
+            new_failure[file_key] = get_basename_from_path(file_path)
             next_failures = failures.append(new_failure, ignore_index=True)
             failures = next_failures
             return None
     data = [[extract(s, f) for s in selectors] for f in file_path_str_pairs]
     columns = [column_map[s] for s in selectors]
     return pd.DataFrame(data, columns=columns), failures
+
+
+def errors_to_file_errors(errors, inv=False):
+    file_errors = {}
+    for index, row in errors.iterrows():
+        file_name = row.at['file_name']
+        selector_name = row.at['selectors']
+        try:
+            if inv:
+                file_errors[selector_name].append(file_name)
+            else:
+                file_errors[file_name].append(selector_name)
+        except KeyError:
+            if inv:
+                file_errors[selector_name] = [file_name]
+            else:
+                file_errors[file_name] = [selector_name]
+    return file_errors

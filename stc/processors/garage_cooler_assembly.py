@@ -1,4 +1,7 @@
 """
+stc.processors.garage_cooler_assembly
+~~~~~~~
+
 Markup for garage_cooler_assembly dataset
 """
 

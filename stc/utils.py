@@ -20,6 +20,10 @@ def list_range(start: int, stop: Optional[int] = None) -> List[int]:
     return list(range(start, stop + 1))
 
 
+def flatten(list_2d):
+    return [item for sublist in list_2d for item in sublist]
+
+
 _MONTH_DICT = {name: num for num,
                name in enumerate(calendar.month_abbr) if num}
 
@@ -62,7 +66,7 @@ def join_path(first_path: str, second_path: str) -> str:
     return os.path.join(expand_path(first_path), expand_path(second_path))
 
 
-def get_file_from_path(file_path: str) -> str:
+def get_basename_from_path(file_path: str) -> str:
     """
     Extract filename from path
     """

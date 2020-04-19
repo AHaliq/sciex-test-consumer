@@ -20,6 +20,10 @@ _EEPROM = sb('eeprom')
 _SN = r's/?n\s*'
 
 
+def filename_selector(file_str, label=None):
+    return "filename"
+
+
 def constant_selector(fix_value, fix_label):
     """
     Returns fix_value regardless of file_str

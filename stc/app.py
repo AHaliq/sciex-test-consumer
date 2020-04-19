@@ -7,6 +7,7 @@ Main application initialization
 
 import sys
 import processors
+import re
 
 import logger
 import filesys
@@ -20,17 +21,27 @@ try:
 except IndexError:
     DIR = get_path("Enter path to directory of data")
 
+processor_names = filesys.get_modules_in_pkg(processors)
+proc = None
 try:
-    MODULE_NAME = get_basename_from_path(DIR).replace(' ', '_').lower()
-    proc = filesys.dynamic_import(f'processors.{MODULE_NAME}')
-    print(f"successfully loaded processor '{MODULE_NAME}'")
+    base_name = get_basename_from_path(DIR).replace(' ', '_').lower()
+    for name in processor_names:
+        regexp = re.compile(rf'^{name}.*$', flags=re.IGNORECASE)
+        if regexp.match(base_name):
+            proc = filesys.dynamic_import(f'processors.{name}')
+            break
+    if proc is None:
+        raise ModuleNotFoundError
+    print(f"successfully loaded processor '{base_name}'")
 except ModuleNotFoundError:
-    print(f"no processor '{MODULE_NAME}' defined")
+    print(f"no processor '{base_name}' defined")
     print(f"make sure your data directory is the same as processor")
     print(f"list of available processors:")
-    for name in filesys.get_modules_in_pkg(processors):
+    for name in processor_names:
         print(f"  {name}")
     sys.exit(1)
+
+# STEP 0 load processor matching data directory
 
 try:
     EXCEL_DIR_PATH = CMD_ARGS[2]

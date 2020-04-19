@@ -35,14 +35,13 @@ def log_failed_reads(number_of_files, number_of_read_files, failed_to_read_files
         print(f'  {FAIL}{f}{ENDC}')
 
 
-def log_errors(errors):
+def log_errors(errors, file_limit=5):
     print(FAIL + BOLD + "\ntabulating selector failures..." + ENDC)
     file_errors = errors_to_file_errors(errors, True)
     print(FAIL + BOLD + "\nselector failures:" + ENDC)
     error_list = file_errors.items()
     for key, value in error_list:
         print(FAIL + UNDERLINE + key + ENDC, end='\n  ')
-        file_limit = 10
         for file_name in value[:file_limit]:
             print(FAIL + f'{file_name}, ' + ENDC, end='')
         if len(value) > file_limit:

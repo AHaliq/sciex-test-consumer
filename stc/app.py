@@ -90,12 +90,13 @@ DATA_FRAME, ERRORS = make_table(
     FILE_PATH_STR_PAIRS
 )
 
-# STEP 5 use selectors
-
 proc.WRITER(EXCEL_PATH, DATA_FRAME)
+
+# STEP 5 generate excel file
+
 if not ERRORS.empty:
     logger.log_errors(ERRORS)
 
 logger.log_success(NUMBER_OF_READ_FILES, NUMBER_OF_FILES, EXCEL_PATH)
 
-# STEP 6 generate excel file
+# STEP 6 print results

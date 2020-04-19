@@ -67,10 +67,10 @@ FILE_PATH_STR_PAIRS = [
     for i, p in enumerate(FILE_PATHS)
 ]
 
-# STEP 3 read files
-
 if NUMBER_OF_FILES > 0:
     logger.erase_line()
+
+# STEP 3 read files
 
 FAILED_TO_READ_FILES = [p for p, f in FILE_PATH_STR_PAIRS if f is None]
 FILE_PATH_STR_PAIRS = [x for x in FILE_PATH_STR_PAIRS if not x[1] is None]

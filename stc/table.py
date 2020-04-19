@@ -6,8 +6,8 @@ Util to generate DataFrames
 """
 
 import pandas as pd
-from utils import get_basename_from_path
-from selector.common import filename_selector
+from stc.utils import get_basename_from_path
+from stc.selector.common import filename_selector
 
 
 def make_table(selectors, file_path_str_pairs):

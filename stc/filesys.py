@@ -6,7 +6,7 @@ Filesystem utils
 """
 
 import os
-from utils import expand_path
+from stc.utils import expand_path
 
 
 def get_files_from_dir(path):

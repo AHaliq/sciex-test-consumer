@@ -5,8 +5,8 @@ stc.processors.p800_excel_spreadsheets
 Markup for p800 dataset
 """
 
-import selector.common as ex
-import selector.p800 as ex8
+import stc.selector.common as ex
+import stc.selector.p800 as ex8
 import xlsxwriter
 
 from utils import list_range as lr, flatten

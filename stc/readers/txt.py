@@ -5,7 +5,7 @@ stc.readers.txt
 Read txt files util
 """
 
-from utils import expand_path
+from stc.utils import expand_path
 
 
 def txt_file_to_str(path):

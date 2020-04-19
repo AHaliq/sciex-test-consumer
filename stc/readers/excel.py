@@ -7,7 +7,7 @@ Read excel files util
 
 import pandas as pd
 import functools
-from utils import list_range as lr
+from stc.utils import list_range as lr
 
 
 def excel_sheet_to_str(excel_path, sheet, columns):

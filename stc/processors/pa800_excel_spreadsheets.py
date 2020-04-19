@@ -6,7 +6,7 @@ Markup for p800 dataset
 """
 
 import selector.common as ex
-import selector.p800 as ex8
+import selector.pa800_excel_spreadsheets as ex8
 import xlsxwriter
 
 from utils import list_range as lr, flatten
@@ -26,9 +26,9 @@ def READER(file_path):
 
 SELECTORS = [
     ex.name_selector,
-    # ex.date_selector,
+    ex.date_selector,
     ex.constant_selector("PA800", "model"),
-    ex.serial_selector
+    ex.serial_selector()
 ] + [
     ex.field_selector(row_id=i)
     for i in lr(0, 11) + lr(54, 56) + lr(63, 65)

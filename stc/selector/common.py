@@ -76,35 +76,50 @@ def model_selector(file_str, label=None):
         return regexp.search(file_str).group(1).strip() if label is None else "model"
 
 
-def serial_selector(file_str, label=None):
-    """
-    selects serial number and takes last 4 characters
+def serial_selector(trunc=True):
+    def wrapper(file_str, label=None):
+        """
+        selects serial number and takes last 4 characters
 
-    the following formats are accepted:
+        the following formats are accepted:
 
-    S/N: <serial>
-    SN: <serial>
-    MODEL/SN: .../<serial>
-    MODEL/S/N: .../<serial>
+        S/N: <serial>
+        SN: <serial>
+        MODEL/SN: .../<serial>
+        MODEL/S/N: .../<serial>
 
-    capture ends with: date, eeprom, dashed border, >
-    """
-    def _serial_selector(file_str, label=None):
-        try:
-            regexp = re.compile(
-                rf"/\s*{_SN}:\s*(.*?)(/| )/?(.*?)((A|B).*)\s*({_DATE}|{_EEPROM}|-|>|\n)",
-                flags=re.IGNORECASE
-            )
-            return regexp.search(file_str).group(4).strip() if label is None else "serial"
-        except (AttributeError, IndexError):
-            regexp = re.compile(
-                rf"{_SN}:\s*(.*)\s*({_DATE}|{_EEPROM}|-|>|\n)",
-                flags=re.IGNORECASE
-            )
-            return regexp.search(file_str).group(1).strip() if label is None else "serial"
-    if label is None:
-        return _serial_selector(file_str)[-4:]
-    return _serial_selector(file_str, label)
+        capture ends with: date, eeprom, dashed border, >
+        """
+        def _serial_selector(file_str, label=None):
+            try:
+                regexp = re.compile(
+                    rf"/\s*{_SN}:\s*(.*?)(/| )/?(.*?)((A|B).*)\s*({_DATE}|{_EEPROM}|-|>|\n)",
+                    flags=re.IGNORECASE
+                )
+                return regexp.search(file_str).group(4).strip() if label is None else "serial"
+            except (AttributeError, IndexError):
+                pass
+            try:
+                regexp = re.compile(
+                    rf"{_SN}:\s*(.*)\s*({_DATE}|{_EEPROM}|-|>|\n)",
+                    flags=re.IGNORECASE
+                )
+                return regexp.search(file_str).group(1).strip() if label is None else "serial"
+            except (AttributeError, IndexError):
+                regexp = re.compile(
+                    rf"serial number\s*:\s*(.*)\s*({_DATE}|{_EEPROM}|-|>|\n)",
+                    flags=re.IGNORECASE
+                )
+                return regexp.search(file_str).group(1).strip() if label is None else "serial"
+
+        if label is None:
+            result = _serial_selector(file_str)
+            if trunc:
+                return result[-4:]
+            return result
+        return _serial_selector(file_str, label)
+    wrapper.__name__ = 'serial_selector'
+    return wrapper
 
 
 def date_selector(file_str, label=None):
@@ -113,8 +128,9 @@ def date_selector(file_str, label=None):
 
     the following formats are accepted:
 
-    DATE: dd mmm yyyy
-    DATE: dd/mm/yyyy
+    dd mmm yyyy
+    yyyy-mm-dd
+    dd/mm/yyyy
     """
     try:
         regexp = re.compile(
@@ -126,7 +142,9 @@ def date_selector(file_str, label=None):
         month = int(month_dict(match.group(3)))
         year = int(match.group(4))
         return pd.Timestamp(year=year, month=month, day=day) if label is None else "date"
-    except (AttributeError, IndexError):
+    except (AttributeError, IndexError, TypeError):
+        pass
+    try:
         regexp = re.compile(
             r"([0-9]{4})(/|-)([0-9]{1,2})(/|-)([0-9]{1,2})",
             flags=re.IGNORECASE
@@ -135,6 +153,16 @@ def date_selector(file_str, label=None):
         day = int(match.group(5))
         month = int(match.group(3))
         year = int(match.group(1))
+        return pd.Timestamp(year=year, month=month, day=day) if label is None else "date"
+    except (AttributeError, IndexError, TypeError):
+        regexp = re.compile(
+            r"([0-9]{1,2})(/|-)([0-9]{1,2})(/|-)([0-9]{4})",
+            flags=re.IGNORECASE
+        )
+        match = regexp.search(file_str)
+        day = int(match.group(3))
+        month = int(match.group(1))
+        year = int(match.group(5))
         return pd.Timestamp(year=year, month=month, day=day) if label is None else "date"
 
 
@@ -166,3 +194,17 @@ def field_selector(field_name='.*', row_id='.*', data_type='.*'):
         return match.group(4).strip() if label is None else field_value
     _field_selector.__name__ = f'{pre_name}_field_selector'
     return _field_selector
+
+
+def key_value_selector(key_name, value_regexp='.*', column_name=None):
+    if column_name is None:
+        column_name = key_name
+
+    def _key_value_selector(file_str, label=None):
+        regexp = re.compile(
+            rf"{key_name}\s*=\s*({value_regexp})(\s*|\n)"
+        )
+        match = regexp.search(file_str)
+        return match.group(1).strip() if label is None else column_name
+    _key_value_selector.__name__ = f'{column_name}_key_value_selector'
+    return _key_value_selector

@@ -1,8 +1,8 @@
 """
-selector.common
+selector.pa800_excel_spreadsheets
 ~~~~~~~~~~~~~~~~~~~~
 
-Common extractors between for dataset p800
+Common extractors between for dataset pa800
 """
 
 import re

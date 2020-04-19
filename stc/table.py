@@ -32,7 +32,7 @@ def make_table(selectors, file_path_str_pairs):
             if column_map[selector] is None:
                 column_map[selector] = selector(file_str, True)
             return res
-        except (AttributeError, IndexError):
+        except (AttributeError, IndexError, TypeError):
             nonlocal failures
             new_failure = {}
             new_failure[selector_key] = selector.__name__

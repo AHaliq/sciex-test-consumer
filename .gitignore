@@ -7,3 +7,5 @@ __pycache__
 .pytest_cache
 .tox
 .project_cache
+build
+dist

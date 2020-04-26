@@ -46,18 +46,50 @@ def get_writer_new_excel(file_path):
     )
 
 
-def standard_processor_writer(default_width=8, **col_width):
+def standard_processor_writer(default_width=8, groups=[], **col_width):
     """
     standard writer with autosize column
     """
     def _standard_processor_writer(excel_path, data_frame):
         sheet_name = "data"
-        writer = get_writer_new_excel(excel_path)
+
         data_frame.index.name = "No."
         data_frame.index = data_frame.index + 1
-        data_frame.to_excel(writer, sheet_name=sheet_name, start_row=1)
-        worksheet = writer.sheets[sheet_name]
+        # setup index
 
+        writer = get_writer_new_excel(excel_path)
+        data_frame.to_excel(
+            writer,
+            sheet_name=sheet_name,
+            startrow=1 if len(groups) > 0 else 0
+        )
+        worksheet = writer.sheets[sheet_name]
+        workbook = writer.book
+        # setup xlsxwriter objects and print dataframe
+
+        if len(groups) > 0:
+            format = workbook.add_format()
+            format.set_bold()
+            format.set_border()
+            format.set_align('center')
+            no_group = lr(0, len(data_frame.columns) - 1)
+            lformat = workbook.add_format()
+            lformat.set_left()
+            rformat = workbook.add_format()
+            rformat.set_right()
+            for group, start, end in groups:
+                worksheet.merge_range(0, start + 1, 0, end + 1,
+                                      group, format)
+                worksheet.set_column(start + 1, start + 1, cell_format=lformat)
+                worksheet.set_column(end + 1, end + 1, cell_format=rformat)
+                no_group = [x for x in no_group if x < start or x > end]
+            # create group headers
+            worksheet.merge_range(0, 0, 1, 0, data_frame.index.name, format)
+            # merge index header
+            for i in no_group:
+                worksheet.merge_range(0, i + 1, 1, i + 1,
+                                      data_frame.columns[i], format)
+            # merge ungrouped headers
         set_all_column_width(data_frame, worksheet, default_width)
         worksheet.set_column(0, 0, 4)
         if col_width is not None:
@@ -68,5 +100,7 @@ def standard_processor_writer(default_width=8, **col_width):
                     )
                 except KeyError:
                     pass
+        # set column widths
+
         writer.save()
     return _standard_processor_writer

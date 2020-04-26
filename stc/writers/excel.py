@@ -60,10 +60,7 @@ def standard_processor_writer(default_width=8, **col_width):
             for column in col_width.keys():
                 try:
                     set_column_width_by_name(
-                        column,
-                        col_width[column],
-                        data_frame,
-                        worksheet
+                        column, col_width[column], data_frame, worksheet
                     )
                 except KeyError:
                     pass

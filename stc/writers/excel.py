@@ -23,12 +23,12 @@ def auto_fit_columns(dataframe, worksheet):
 
 
 def set_all_column_width(dataframe, worksheet, width):
-    for i in lr(0, len(dataframe.columns) - 1):
+    for i in lr(1, len(dataframe.columns)):
         worksheet.set_column(i, i, width)
 
 
 def set_column_width_by_name(name, width, data_frame, worksheet):
-    col_i = data_frame.columns.get_loc(name)
+    col_i = data_frame.columns.get_loc(name) + 1
     worksheet.set_column(col_i, col_i, width)
 
 
@@ -54,9 +54,12 @@ def standard_processor_writer(default_width=8, **col_width):
         sheet_name = "data"
         writer = get_writer_new_excel(excel_path)
         data_frame.index.name = "No."
+        data_frame.index = data_frame.index + 1
         data_frame.to_excel(writer, sheet_name=sheet_name)
         worksheet = writer.sheets[sheet_name]
+
         set_all_column_width(data_frame, worksheet, default_width)
+        worksheet.set_column(0, 0, 4)
         if col_width is not None:
             for column in col_width.keys():
                 try:

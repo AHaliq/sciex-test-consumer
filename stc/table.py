@@ -14,6 +14,7 @@ def make_table(selectors, file_path_str_pairs):
     """
     Generate dataframe
     @param selectors            list of selectors in order; values extracted as columns
+                                tuple of selector and column name is accepted as well
     @param file_path_str_pairs  list of pairs of file_path and file_str
     @return pair of dataframe and selector failures
     """
@@ -22,15 +23,23 @@ def make_table(selectors, file_path_str_pairs):
     file_key = 'file_name'
     failures = pd.DataFrame([], columns=[selector_key, file_key])
 
-    def extract(selector, file_path_str_pair):
+    def extract(selector_column, file_path_str_pair):
         file_path, file_str = file_path_str_pair
+        if type(selector_column) == tuple:
+            selector, label = selector_column
+        else:
+            selector = selector_column
+            label = None
         try:
             if selector == filename_selector:
                 res = file_path
             else:
                 res = selector(file_str)
-            if column_map[selector] is None:
-                column_map[selector] = selector(file_str, True)
+            if column_map[selector_column] is None:
+                if label is not None:
+                    column_map[selector_column] = label
+                else:
+                    column_map[selector_column] = selector(file_str, True)
             return res
         except (AttributeError, IndexError, TypeError):
             nonlocal failures

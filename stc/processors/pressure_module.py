@@ -30,4 +30,4 @@ SELECTORS = [
     ]
 )
 
-WRITER = standard_processor_writer
+WRITER = standard_processor_writer(default_width=12, date=11, serial=15)

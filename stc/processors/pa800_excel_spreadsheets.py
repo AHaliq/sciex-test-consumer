@@ -40,4 +40,4 @@ SELECTORS = [
     for i in lr(1, 6)
 ])
 
-WRITER = standard_processor_writer
+WRITER = standard_processor_writer(default_width=12, date=11, name=11)

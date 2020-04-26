@@ -29,5 +29,7 @@ WRITER = standard_processor_writer(
     groups=[("Teach I", 4, 6), ("Teach O", 7, 9), ("Teach GI", 10, 12),
             ("Teach GO", 13, 15), ("Offset In", 16, 18), ("Offset Out", 19, 21)],
     date=11,
-    name=11
+    name=11,
+    model=6,
+    serial=5
 )

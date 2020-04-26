@@ -53,7 +53,8 @@ def standard_processor_writer(default_width=8, **col_width):
     def _standard_processor_writer(excel_path, data_frame):
         sheet_name = "data"
         writer = get_writer_new_excel(excel_path)
-        data_frame.to_excel(writer, sheet_name=sheet_name, index=False)
+        data_frame.index.name = "No."
+        data_frame.to_excel(writer, sheet_name=sheet_name)
         worksheet = writer.sheets[sheet_name]
         set_all_column_width(data_frame, worksheet, default_width)
         if col_width is not None:

@@ -19,7 +19,8 @@ def READER(file_path):
     try:
         eeprom = excel_sheet_to_str(file_path, 'Final EEPROM', [0, 1])
         chemistry = excel_sheet_to_str(file_path, "Chemistry", (1, 2, ">>", 3))
-        return eeprom + '\n##CHEMISTRY##\n' + chemistry
+        optics = excel_sheet_to_str(file_path, "Source Optics", [0])
+        return eeprom + '\n##CHEMISTRY##\n' + chemistry + '\n##OPTICS##\n' + optics
     except xlrd.biffh.XLRDError:
         return None
 
@@ -28,7 +29,8 @@ SELECTORS = [
     ex.name_selector,
     ex.date_selector,
     ex.constant_selector("PA800", "model"),
-    ex.serial_selector()
+    ex.serial_selector(),
+    ex8.photodiode_selector
 ] + [
     ex.field_selector(row_id=i)
     for i in lr(0, 11) + lr(54, 56) + lr(63, 65)
@@ -40,4 +42,4 @@ SELECTORS = [
     for i in lr(1, 6)
 ])
 
-WRITER = standard_processor_writer(default_width=12, date=11, name=11)
+WRITER = standard_processor_writer(default_width=12, date=11, name=11, photodiode_current=16)

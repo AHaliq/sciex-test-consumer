@@ -7,8 +7,19 @@ Common extractors between for dataset pa800
 
 import re
 
+import selector.common as ex
+
 _DIVIDER = r"##CHEMISTRY##.*?"
 
+def photodiode_selector(file_str, label=None):
+    result = ex.key_value_selector("Photodiode current")(file_str, label)
+    if label is not None:
+        return "photodiode_current"
+    regexp = re.compile(
+        rf"\s*([0-9]+\.?[0-9]*).*",
+        flags=re.IGNORECASE | re.DOTALL
+    )
+    return regexp.search(result).group(1)
 
 def run_area_selector(id):
     """
